@@ -2,8 +2,18 @@
 
 import sys
 
+
+HLT = 0b00000001
+LDI = 0b10000010
+PRN = 0b01000111
+# MULT = 
+# CALL =
+# RET = 
+
 class CPU:
     """Main CPU class."""
+
+    
 
     def __init__(self):
         """Construct a new CPU."""
@@ -70,4 +80,33 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        running = True
+        
+        self.load()
+        
+        while running:
+            # command = self.ram[self.pc]
+            # print(self.ram[self.pc])
+            command = self.ram_read(self.pc)
+
+            if command == HLT:
+                running = False
+                self.pc += 1
+            elif command == LDI:
+                self.reg[self.pc+1] = self.ram[self.pc+2]
+                self.pc += 3
+            elif command == PRN:
+                print(self.ram[self.pc+1])
+                self.pc += 2
+            else:
+                print(f'unknown instruction: {command}')
+                sys.exit(1)
+
+test_cpu = CPU()
+test_cpu.run()
+# print(f'pc: {test_cpu.pc}')
+
+
+print(f'HLT: {HLT}')
+print(f'LDI: {LDI}')
+print(f'PRN: {PRN}')
