@@ -83,6 +83,9 @@ class CPU:
         running = True
         
         self.load()
+
+        # for item in self.ram:
+        #     print(f'item: {item}')
         
         while running:
             # command = self.ram[self.pc]
@@ -93,10 +96,16 @@ class CPU:
                 running = False
                 self.pc += 1
             elif command == LDI:
-                self.reg[self.pc+1] = self.ram[self.pc+2]
+                # print(f'ram_read+1 {self.ram_read(self.pc+1)}')
+                # print(f'ram_read+2 {self.ram_read(self.pc+1)}')
+                self.reg[self.ram_read(self.pc+1)] = self.ram_read(self.pc+2)
                 self.pc += 3
+                # print(f'test: {self.reg[self.pc+1]}')
+                # print(f'test: {self.ram[self.pc+2]}')
+                # print(f'pc+1: {self.pc+1}')
             elif command == PRN:
-                print(self.ram[self.pc+1])
+                # reg = self.reg
+                print(self.reg[self.ram_read(self.pc+1)])
                 self.pc += 2
             else:
                 print(f'unknown instruction: {command}')
@@ -107,6 +116,6 @@ test_cpu.run()
 # print(f'pc: {test_cpu.pc}')
 
 
-print(f'HLT: {HLT}')
-print(f'LDI: {LDI}')
-print(f'PRN: {PRN}')
+# print(f'HLT: {HLT}')
+# print(f'LDI: {LDI}')
+# print(f'PRN: {PRN}')
