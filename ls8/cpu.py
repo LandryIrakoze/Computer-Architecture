@@ -136,6 +136,9 @@ class CPU:
                 # reg = self.reg
                 print(self.reg[self.ram_read(self.pc+1)])
                 self.pc += 2
+            elif command == ADD:
+                self.reg[self.ram_read(self.pc+1)] += self.reg[self.ram_read(self.pc+2)]
+                self.pc += 3
             elif command == MUL:
                 self.reg[self.ram_read(self.pc+1)] *= self.reg[self.ram_read(self.pc+2)]
                 self.pc += 3
