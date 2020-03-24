@@ -8,10 +8,10 @@ LDI  = 0b10000010
 PRN  = 0b01000111
 ADD  = 0b10100000
 MUL  = 0b10100010
+PUSH = 0b01000101
+POP  = 0b01000110
 CALL = 0b01010000
 RET  = 0b00010001
-# PUSH = 0b01000101
-# POP  = 0b01000110
 # JMP  = 0b01010100
 # CMP  = 0b10100111
 # JEQ  = 0b01010101
@@ -136,6 +136,9 @@ class CPU:
                 # reg = self.reg
                 print(self.reg[self.ram_read(self.pc+1)])
                 self.pc += 2
+            elif command == MUL:
+                self.reg[self.ram_read(self.pc+1)] *= self.reg[self.ram_read(self.pc+2)]
+                self.pc += 3
             else:
                 print(f'unknown instruction: {command}')
                 sys.exit(1)
