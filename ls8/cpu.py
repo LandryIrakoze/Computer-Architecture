@@ -3,12 +3,18 @@
 import sys
 
 
-HLT = 0b00000001
-LDI = 0b10000010
-PRN = 0b01000111
-# MULT = 
-# CALL =
-# RET = 
+HLT  = 0b00000001
+LDI  = 0b10000010
+PRN  = 0b01000111
+ADD  = 0b10100000
+MUL  = 0b10100010
+CALL = 0b01010000
+RET  = 0b00010001
+# PUSH = 0b01000101
+# POP  = 0b01000110
+# JMP  = 0b01010100
+# CMP  = 0b10100111
+# JEQ  = 0b01010101
 
 class CPU:
     """Main CPU class."""
@@ -19,11 +25,18 @@ class CPU:
         """Construct a new CPU."""
         self.pc = 0
         self.reg = [0] * 8
-        self.ram = [0] * 8
+        self.ram = [0] * 256
 
 
     def load(self):
         """Load a program into memory."""
+
+        if len(sys.argv) > 1:
+            loaded_program = sys.argv[1]
+        
+        with open(f'./examples/{loaded_program}') as file:
+            data = file.read()
+            print(data)
 
         address = 0
 
