@@ -60,25 +60,6 @@ class CPU:
             print('File not found')
             sys.exit(2)
 
-
-        # address = 0
-
-        # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010, # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111, # PRN R0
-        #     0b00000000,
-        #     0b00000001, # HLT
-        # ]
-
-        # for instruction in program:
-        #     self.ram[address] = instruction
-        #     address += 1
-
     def ram_read(self, address):
         return self.ram[address]
 
@@ -117,26 +98,28 @@ class CPU:
     def run(self):
         """Run the CPU."""
         running = True
-        
         self.load()
 
         while running:
             command = self.ram_read(self.pc)
+                            
+            operand_a = self.ram_read(self.pc+1)
+            operand_b = self.ram_read(self.pc+2)
 
             if command == HLT:
                 running = False
                 self.pc += 1
             elif command == LDI:
-                self.reg[self.ram_read(self.pc+1)] = self.ram_read(self.pc+2)
+                self.reg[operand_a] = operand_b
                 self.pc += 3
             elif command == PRN:
-                print(self.reg[self.ram_read(self.pc+1)])
+                print(self.reg[operand_a])
                 self.pc += 2
             elif command == ADD:
-                self.reg[self.ram_read(self.pc+1)] += self.reg[self.ram_read(self.pc+2)]
+                self.reg[operand_a] += self.reg[operand_b]
                 self.pc += 3
             elif command == MUL:
-                self.reg[self.ram_read(self.pc+1)] *= self.reg[self.ram_read(self.pc+2)]
+                self.reg[operand_a] *= self.reg[operand_b]
                 self.pc += 3
             # elif command == PUSH:
             # elif command == POP:
