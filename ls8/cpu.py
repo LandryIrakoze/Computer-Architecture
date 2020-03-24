@@ -12,9 +12,13 @@ PUSH = 0b01000101
 POP  = 0b01000110
 CALL = 0b01010000
 RET  = 0b00010001
-# JMP  = 0b01010100
-# CMP  = 0b10100111
-# JEQ  = 0b01010101
+CMP  = 0b01010101
+JMP  = 0b01010100
+JEQ  = 0b01010101
+JNE  = 0b01010110
+
+#    = 0b00000LGE
+FLAG = 0b00000000
 
 class CPU:
     """Main CPU class."""
@@ -142,6 +146,15 @@ class CPU:
             elif command == MUL:
                 self.reg[self.ram_read(self.pc+1)] *= self.reg[self.ram_read(self.pc+2)]
                 self.pc += 3
+            # elif command == PUSH:
+            # elif command == POP:
+            # elif command == CALL:
+            # elif command == RET:
+            # elif command == CMP:
+            elif command == JMP:
+                self.pc == self.ram_read(self.pc+1)
+            # elif command == JEQ:
+            # elif command == JNE:
             else:
                 print(f'unknown instruction: {command}')
                 sys.exit(1)
