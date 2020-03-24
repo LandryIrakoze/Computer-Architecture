@@ -17,8 +17,11 @@ JMP  = 0b01010100
 JEQ  = 0b01010101
 JNE  = 0b01010110
 
-#    = 0b00000LGE
-FLAG = 0b00000000
+#  = 0b00000LGE
+FL = 0b00000000
+LT = 0b00000100
+GT = 0b00000010
+ET = 0b00000001
 
 class CPU:
     """Main CPU class."""
@@ -117,27 +120,16 @@ class CPU:
         
         self.load()
 
-        # for item in self.ram:
-        #     print(f'item: {item}')
-        
         while running:
-            # command = self.ram[self.pc]
-            # print(self.ram[self.pc])
             command = self.ram_read(self.pc)
 
             if command == HLT:
                 running = False
                 self.pc += 1
             elif command == LDI:
-                # print(f'ram_read+1 {self.ram_read(self.pc+1)}')
-                # print(f'ram_read+2 {self.ram_read(self.pc+1)}')
                 self.reg[self.ram_read(self.pc+1)] = self.ram_read(self.pc+2)
                 self.pc += 3
-                # print(f'test: {self.reg[self.pc+1]}')
-                # print(f'test: {self.ram[self.pc+2]}')
-                # print(f'pc+1: {self.pc+1}')
             elif command == PRN:
-                # reg = self.reg
                 print(self.reg[self.ram_read(self.pc+1)])
                 self.pc += 2
             elif command == ADD:
@@ -152,18 +144,11 @@ class CPU:
             # elif command == RET:
             # elif command == CMP:
             elif command == JMP:
-                self.pc == self.ram_read(self.pc+1)
+                self.pc == self.reg[self.ram_read(self.pc+1)]
             # elif command == JEQ:
+            #     if FL == ET:
+            #         pass
             # elif command == JNE:
             else:
                 print(f'unknown instruction: {command}')
                 sys.exit(1)
-
-test_cpu = CPU()
-test_cpu.run()
-# print(f'pc: {test_cpu.pc}')
-
-
-# print(f'HLT: {HLT}')
-# print(f'LDI: {LDI}')
-# print(f'PRN: {PRN}')
