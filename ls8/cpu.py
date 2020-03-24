@@ -25,36 +25,52 @@ class CPU:
         """Construct a new CPU."""
         self.pc = 0
         self.reg = [0] * 8
-        self.ram = [0] * 256
+        self.ram = [None] * 256
 
 
     def load(self):
         """Load a program into memory."""
 
-        if len(sys.argv) > 1:
-            loaded_program = sys.argv[1]
-        
-        with open(f'./examples/{loaded_program}') as file:
-            data = file.read()
-            print(data)
+        if len(sys.argv) != 2:
+            print("usage: file.py filename")
+            sys.exit(1)
 
-        address = 0
+        loaded_program = sys.argv[1]
+
+        try:
+            address = 0
+            
+            with open(f'./examples/{loaded_program}') as file:
+                for line in file:
+                    comment_split = line.split("#")
+                    num = comment_split[0].strip()
+                    if num == '':
+                        continue
+                    val = int(num, 2)
+                    self.ram[address] = val
+                    address += 1
+        except FileNotFoundError:
+            print('File not found')
+            sys.exit(2)
+
+
+        # address = 0
 
         # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010, # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111, # PRN R0
+        #     0b00000000,
+        #     0b00000001, # HLT
+        # ]
 
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
+        # for instruction in program:
+        #     self.ram[address] = instruction
+        #     address += 1
 
     def ram_read(self, address):
         return self.ram[address]
