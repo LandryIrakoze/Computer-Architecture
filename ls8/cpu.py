@@ -104,8 +104,6 @@ class CPU:
             operand_a = self.ram_read(self.pc+1)
             operand_b = self.ram_read(self.pc+2)
 
-            previous = self.ram_read(self.pc-1)
-
             if command == HLT:
                 running = False
                 self.pc += 1
@@ -132,7 +130,6 @@ class CPU:
             elif command == CALL:
                 self.reg[self.sp] -= 1
                 self.ram[self.reg[self.sp]] = self.pc + 2
-                # self.pc = operand_a
                 self.pc = self.reg[operand_a]
             elif command == RET:
                 self.pc = self.ram[self.reg[self.sp]]
@@ -140,17 +137,17 @@ class CPU:
             elif command == CMP:
                 self.alu('CMP', operand_a, operand_b)
             elif command == JMP:
-                self.pc == self.reg[operand_a]
+                self.pc == self.ram[self.reg[operand_a]]
             elif command == JEQ:
                 if FL == ET:
-                    self.pc = self.reg[operand_a]
+                    self.pc = self.ram[self.reg[operand_a]]
                 else:
-                    self.pc += 1
+                    self.pc += 2
             elif command == JNE:
                 if FL != ET:
-                    self.pc = self.reg[operand_a]
+                    self.pc = self.ram[self.reg[operand_a]]
                 else:
-                    self.pc += 1
+                    self.pc += 2
             else:
                 print(f'unknown instruction: {command}')
                 sys.exit(1)
