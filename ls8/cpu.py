@@ -2,7 +2,7 @@
 
 import sys
 
-
+# Instructions
 HLT  = 0b00000001
 LDI  = 0b10000010
 PRN  = 0b01000111
@@ -17,23 +17,25 @@ JMP  = 0b01010100
 JEQ  = 0b01010101
 JNE  = 0b01010110
 
+
+# Flags
 #  = 0b00000LGE
 FL = 0b00000000
 LT = 0b00000100
 GT = 0b00000010
 ET = 0b00000001
+RESET = 0b00000000
 
 class CPU:
     """Main CPU class."""
-
-    
-
     def __init__(self):
         """Construct a new CPU."""
         self.pc = 0
+        self.sp = 7
         self.reg = [0] * 8
-        self.ram = [None] * 256
+        self.ram = [0] * 256
 
+        self.branchtable = {}
 
     def load(self):
         """Load a program into memory."""
@@ -68,10 +70,27 @@ class CPU:
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
+        alu_branchtable = {}
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+            self.pc += 3
+        elif op == "SUB": 
+            self.reg[reg_a] -= self.reg[reg_b]
+            self.pc += 3
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+            self.pc += 3
+        elif op == "CMP":
+            if reg_a < reg_b:
+                FL = LT
+                self.pc += 3
+            elif reg_a > reg_b:
+                FL = GT
+                self.pc += 3
+            elif reg_a == reg_b:
+                FL = ET
+                self.pc += 3
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -106,6 +125,8 @@ class CPU:
             operand_a = self.ram_read(self.pc+1)
             operand_b = self.ram_read(self.pc+2)
 
+            previous = self.ram_read(self.pc-1)
+
             if command == HLT:
                 running = False
                 self.pc += 1
@@ -116,22 +137,35 @@ class CPU:
                 print(self.reg[operand_a])
                 self.pc += 2
             elif command == ADD:
-                self.reg[operand_a] += self.reg[operand_b]
-                self.pc += 3
+                self.alu('ADD', operand_a, operand_b)
             elif command == MUL:
-                self.reg[operand_a] *= self.reg[operand_b]
-                self.pc += 3
-            # elif command == PUSH:
-            # elif command == POP:
+                self.alu('MUL', operand_a, operand_b)
+            elif command == PUSH:
+                val = self.reg[operand_a]
+                self.reg[self.sp] -= 1
+                self.ram[self.reg[self.sp]] = val
+                self.pc += 2
+            elif command == POP:
+                val = self.ram[self.reg[self.sp]]
+                self.reg[operand_a] = val
+                self.reg[self.sp] += 1
+                self.pc += 2
             # elif command == CALL:
             # elif command == RET:
-            # elif command == CMP:
+            elif command == CMP:
+                self.alu('CMP', operand_a, operand_b)
             elif command == JMP:
-                self.pc == self.reg[self.ram_read(self.pc+1)]
-            # elif command == JEQ:
-            #     if FL == ET:
-            #         pass
-            # elif command == JNE:
+                self.pc == self.reg[operand_a]
+            elif command == JEQ:
+                if FL == ET:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 1
+            elif command == JNE:
+                if FL != ET:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 1
             else:
                 print(f'unknown instruction: {command}')
                 sys.exit(1)
