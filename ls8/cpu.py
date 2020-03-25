@@ -4,6 +4,7 @@ import sys
 
 from instructions import *
 
+
 class CPU:
     """Main CPU class."""
     def __init__(self):
@@ -128,8 +129,14 @@ class CPU:
                 self.reg[operand_a] = val
                 self.reg[self.sp] += 1
                 self.pc += 2
-            # elif command == CALL:
-            # elif command == RET:
+            elif command == CALL:
+                self.reg[self.sp] -= 1
+                self.ram[self.reg[self.sp]] = self.pc + 2
+                # self.pc = operand_a
+                self.pc = self.reg[operand_a]
+            elif command == RET:
+                self.pc = self.ram[self.reg[self.sp]]
+                self.reg[self.sp] += 1
             elif command == CMP:
                 self.alu('CMP', operand_a, operand_b)
             elif command == JMP:
