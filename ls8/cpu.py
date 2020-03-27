@@ -54,6 +54,29 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
             self.pc += 3
+        elif op == "ADI":
+            pass
+        elif op == "AND":
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+            self.pc += 3
+        elif op == "OR":
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+            self.pc += 3
+        elif op == "XOR":
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
+            self.pc += 3
+        elif op == "NOT":
+            self.reg[reg_a] = ~ self.reg[reg_a] 
+            self.pc += 2
+        elif op == "SHL":
+            self.reg[reg_a] = self.reg[reg_a] << self.reg[reg_b]
+            self.pc += 3
+        elif op == "SHR":
+            self.reg[reg_a] = self.reg[reg_a] >> self.reg[reg_b]
+            self.pc += 3
+        elif op == "MOD":
+            self.reg[reg_a] %= self.reg[reg_b]
+            self.pc += 3
         elif op == "SUB": 
             self.reg[reg_a] -= self.reg[reg_b]
             self.pc += 3
@@ -137,15 +160,18 @@ class CPU:
             elif command == CMP:
                 self.alu('CMP', operand_a, operand_b)
             elif command == JMP:
-                self.pc == self.ram[self.reg[operand_a]]
+                self.pc = self.reg[operand_a]
+                # self.pc == self.ram[self.reg[operand_a]]
             elif command == JEQ:
                 if FL == ET:
-                    self.pc = self.ram[self.reg[operand_a]]
+                    self.pc = self.reg[operand_a]
+                    # self.pc = self.ram[self.reg[operand_a]]
                 else:
                     self.pc += 2
             elif command == JNE:
                 if FL != ET:
-                    self.pc = self.ram[self.reg[operand_a]]
+                    self.pc = self.reg[operand_a]
+                    # self.pc = self.ram[self.reg[operand_a]]
                 else:
                     self.pc += 2
             else:
